@@ -1,42 +1,103 @@
+/* BackstageIQ custom component styles */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.cue-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bqi-panel);
+  border: 1px solid var(--bqi-border);
+  border-left-width: 4px;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cue-card.active {
+  border-left-color: var(--bqi-green);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.cue-card.upcoming {
+  border-left-color: var(--bqi-yellow);
 }
 
-.card {
-  padding: 2em;
+.cue-card.completed {
+  border-left-color: var(--bqi-border);
+  opacity: 0.5;
 }
 
-.read-the-docs {
-  color: #888;
+.cue-time {
+  margin-left: auto;
+  background: #1f2937; /* gray-800 */
+  color: var(--bqi-text);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
+
+.control-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bqi-panel);
+  border-top: 1px solid var(--bqi-border);
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+.control-button {
+  min-height: 48px;
+  min-width: 48px;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.control-button.green { background-color: var(--bqi-green); }
+.control-button.yellow { background-color: var(--bqi-yellow); }
+.control-button.red { background-color: var(--bqi-red); }
+.control-button.blue { background-color: #2563eb; } /* blue-600 */
+
+/* Tech-style background grid (very subtle) */
+.bqi-grid-bg {
+  background-color: var(--bqi-bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 0;
+}
+
+/* Responsive timer sizes */
+.time-xl { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; }
+.time-lg { font-size: clamp(1.25rem, 2.5vw, 1.75rem); line-height: 1.1; }
+
+/* iOS-friendly input styles */
+input, button, select, textarea {
+  -webkit-appearance: none; /* remove iOS inner shadows and rounded corners */
+  appearance: none;
+}
+input::placeholder { color: #6b7280; } /* gray-500 */
+input, textarea {
+  box-shadow: none !important; /* prevent iOS inset shadow */
+}
+
+/* Improve touch feedback without removing accessibility */
+.btn-focus:focus-visible {
+  outline: 2px solid rgba(59,130,246,0.9);
+  outline-offset: 2px;
+}
+
+/* Fixed header/footer sizes for layout calculations */
+.bqi-header { height: 64px; }
+.bqi-footer { height: 72px; }

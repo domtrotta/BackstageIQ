@@ -87,61 +87,72 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-mono">
-      <div className="flex justify-between items-center mb-4">
-        <div>Current Time: {new Date().toLocaleTimeString()}</div>
-        <div>Total Time: {formatTime(totalElapsed)}</div>
+    <div className="min-h-screen bqi-grid-bg text-gray-100 flex flex-col pt-16 pb-24 px-4 bqi-overscroll">
+      <header className="fixed top-0 left-0 right-0 bqi-header bg-neutral-950/80 backdrop-blur border-b border-gray-800 flex items-center justify-between px-4">
+        <div className="text-gray-400 text-sm">{new Date().toLocaleTimeString()}</div>
+        <div className="time-mono time-xl font-bold">{formatTime(totalElapsed)}</div>
+        <div className="w-16" /> {/* spacer for symmetry */}
+      </header>
+
+      <div className="overflow-y-auto scrollbar-thin no-scrollbar flex-1 space-y-2">
+        {cues.map((cue, idx) => {
+          let borderClass = 'border-l-4 ';
+          if (cue.isActive) {
+            borderClass += 'border-green-500';
+          } else if (activeCueIndex !== null && idx === activeCueIndex + 1) {
+            borderClass += 'border-yellow-500';
+          } else {
+            borderClass += 'border-gray-700 opacity-50';
+          }
+          return (
+            <div key={cue.id} className={`bqi-panel flex items-center gap-2 p-3 ${borderClass}`}>
+              <input
+                value={cue.title}
+                onChange={e => {
+                  const updated = [...cues];
+                  updated[idx].title = e.target.value;
+                  setCues(updated);
+                }}
+                className="bg-neutral-900 border border-gray-700 text-gray-100 rounded px-2 py-1 time-mono w-full sm:w-64"
+              />
+              <input
+                value={formatTime(cue.presetTime)}
+                onChange={e => {
+                  const [m, s] = e.target.value.split(':').map(Number);
+                  const updated = [...cues];
+                  updated[idx].presetTime = (m || 0) * 60 + (s || 0);
+                  setCues(updated);
+                }}
+                className="bg-neutral-900 border border-gray-700 text-gray-100 rounded px-2 py-1 time-mono w-28 text-center"
+              />
+              <span className="ml-auto bg-gray-800 text-gray-100 rounded px-3 py-1 time-lg time-mono">{formatTime(cue.elapsedTime)}</span>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="space-y-2">
-        {cues.map((cue, idx) => (
-          <div key={cue.id} className={`p-2 rounded flex items-center ${cue.isActive ? 'bg-green-600' : 'bg-gray-800'}`}>
-            <input
-              value={cue.title}
-              onChange={e => {
-                const updated = [...cues];
-                updated[idx].title = e.target.value;
-                setCues(updated);
-              }}
-              className="bg-black border border-gray-600 p-1 mr-2 w-48"
-            />
-            <input
-              value={formatTime(cue.presetTime)}
-              onChange={e => {
-                const [m, s] = e.target.value.split(':').map(Number);
-                const updated = [...cues];
-                updated[idx].presetTime = (m || 0) * 60 + (s || 0);
-                setCues(updated);
-              }}
-              className="bg-black border border-gray-600 p-1 mr-2 w-20"
-            />
-            <span className="ml-auto text-black bg-white px-2 py-1 rounded">{formatTime(cue.elapsedTime)}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 flex gap-2">
-        <button onClick={startShow} className="bg-blue-600 px-4 py-2 rounded">{isRunning ? 'Pause' : 'Start'} Show</button>
-        <button onClick={nextCue} className="bg-green-600 px-4 py-2 rounded">Next Cue</button>
-        <button onClick={resetTimers} className="bg-purple-600 px-4 py-2 rounded">Reset Time</button>
-        <button onClick={newSession} className="bg-red-600 px-4 py-2 rounded">New</button>
-      </div>
-
-      <div className="mt-4 flex gap-2">
+      <div className="bqi-panel flex gap-2 p-3 mb-3 sticky bottom-24">
         <input
           placeholder="New Cue Title"
           value={newCueTitle}
           onChange={e => setNewCueTitle(e.target.value)}
-          className="bg-black border border-gray-600 p-2 w-48"
+          className="bg-neutral-900 border border-gray-700 text-gray-100 rounded px-2 py-1 time-mono flex-1"
         />
         <input
           placeholder="mm:ss"
           value={newCueTime}
           onChange={e => setNewCueTime(e.target.value)}
-          className="bg-black border border-gray-600 p-2 w-20"
+          className="bg-neutral-900 border border-gray-700 text-gray-100 rounded px-2 py-1 time-mono w-24"
         />
-        <button onClick={addCue} className="bg-orange-500 px-4 py-2 rounded">Add Cue</button>
+        <button onClick={addCue} className="bg-orange-500 tap-safe rounded-lg font-semibold px-4 btn-focus">Add Cue</button>
       </div>
+
+      <footer className="fixed bottom-0 inset-x-0 bqi-footer bg-neutral-900/90 backdrop-blur bqi-divider safe-area-b px-3 flex items-center justify-around gap-2">
+        <button onClick={startShow} className="tap-safe rounded-lg font-semibold px-6 py-3 bg-green-600 btn-focus"> {isRunning ? 'Pause' : 'Start'} Show </button>
+        <button onClick={nextCue} className="tap-safe rounded-lg font-semibold px-6 py-3 bg-yellow-600 btn-focus">Next Cue</button>
+        <button onClick={resetTimers} className="tap-safe rounded-lg font-semibold px-6 py-3 bg-blue-600 btn-focus">Reset Time</button>
+        <button onClick={newSession} className="tap-safe rounded-lg font-semibold px-6 py-3 bg-red-600 btn-focus">New</button>
+      </footer>
     </div>
   );
 }
